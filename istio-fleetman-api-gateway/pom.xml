@@ -18,9 +18,18 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 
+  <repositories>
+        <repository>
+            <id>spring-repo</id>
+            <url>https://repo.spring.io/plugins-release/</url>
+        </repository>
+  </repositories>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
+    <docker.image.prefix>frodrigues42</docker.image.prefix>
+    <docker.image.name>istio-fleetman-api-gateway</docker.image.name>
 	</properties>
 
 	<dependencyManagement>
@@ -40,72 +49,81 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		
+
 	    <dependency>
 	      <groupId>org.springframework.boot</groupId>
 	      <artifactId>spring-boot-starter-websocket</artifactId>
 	    </dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-    	    	
+
    		<dependency>
  	   		<groupId>org.springframework.cloud</groupId>
     		<artifactId>spring-cloud-starter-openfeign</artifactId>
-    	</dependency> 	
+    	</dependency>
+    <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>com.springsource.javax.xml.bind</artifactId>
+        <version>2.1.7</version>
+        <scope>provided</scope>
+    </dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration><executable>false</executable></configuration>
-			</plugin>	
+			</plugin>
 
  			<plugin>
 				<groupId>io.fabric8</groupId>
 				<artifactId>docker-maven-plugin</artifactId>
 				<version>0.21.0</version>
-			
-				<configuration>			
-			        <!-- <dockerHost>unix:///var/run/docker.sock</dockerHost> -->
-			        <dockerHost>tcp://192.168.99.155:2376</dockerHost>  
-                    <certPath>C:\cygwin64\home\Richard\.minikube\certs</certPath>
-			
-			        <verbose>true</verbose>
-        			<extensions>true</extensions>
-			        		     
+
+				<configuration>
 					<images>
 						<image>
-							<name>richardchesterwood/istio-fleetman-api-gateway</name>
+							<name>frodrigues42/istio-fleetman-api-gateway</name>
 							<build>
 								<dockerFileDir>${project.basedir}/src/main/docker/</dockerFileDir>
-			
+
 								<assembly>
 									<descriptorRef>artifact</descriptorRef>
 								</assembly>
 								<tags>
-									<tag>6</tag>
+									<tag>7</tag>
 								</tags>
 							</build>
 						</image>
 					</images>
-				</configuration>								
-			</plugin>						
+				</configuration>
+        <executions>
+         <execution>
+            <id>default</id>
+            <phase>install</phase>
+            <goals>
+                <goal>build</goal>
+                <goal>push</goal>
+            </goals>
+         </execution>
+       </executions>
+			</plugin>
 		</plugins>
-		
+
 		<resources>
 			<resource>
 				<filtering>false</filtering>
 				<directory>src/main/resources</directory>
-			</resource>		
+			</resource>
 		</resources>
-		
+
 	</build>
-	
+
 
 </project>
